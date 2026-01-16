@@ -1,8 +1,3 @@
-Here’s a **clean, simple, and efficient README.md** you can **directly copy–paste** into your project.
-It’s written clearly (not overhyped), professional, and suitable for **college + real-world demo**.
-
----
-
 # 📘 EduLog – Meeting Management System
 
 EduLog is a simple web-based application built using **Flask** to record, manage, and store meeting details in an **Excel file**.
