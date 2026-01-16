@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EduLog – Meeting Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+  body {
+    background: #53389E;
+    padding: 40px 0;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  .form-box {
+    max-width: 760px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    color: #111;
+  }
+
+  h2 {
+    margin-bottom: 30px;
+    color: #53389E;
+  }
+
+  label {
+    font-weight: 600;
+    margin-top: 26px;
+    display: block;
+    font-size: 14px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+
+  textarea {
+    min-height: 90px;
+    resize: vertical;
+  }
+
+  .checkbox-group,
+  .radio-group {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 20px;
+  }
+
+  .checkbox-group label,
+  .radio-group label {
+    font-weight: normal;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .radio-group {
+    grid-template-columns: 1fr;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: auto;
+  }
+
+  button {
+    background: #53389E;
+    color: white;
+    padding: 14px;
+    border: none;
+    margin-top: 40px;
+    width: 100%;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    opacity: 0.95;
+  }
+</style>
+
+</head>
+
+<body style="background:#53389E; padding:30px;">
+
+<div class="form-box">
+<h2>Meeting Log Form</h2>
+
+{% if success %}
+  <p style="color:green; font-weight:600; margin-bottom:20px;">
+    ✅ Meeting details saved successfully!
+  </p>
+{% endif %}
+
+<form method="POST" enctype="multipart/form-data">
+
+<!-- 1 -->
+<label>Date of Meeting</label>
+<input type="date" name="Date_of_Meeting" required>
+
+<!-- 2 -->
+<label>Department Conducting the Meeting </label>
+<select name="Department" required>
+  <option value="">Choose</option>
+  <option>Digital Marketing</option>
+  <option>Customer Relations</option>
+  <option>HR</option>
+  <option>Board Members</option>
+  <option>Corporate Partnerships</option>
+  <option>Tech & Operations</option>
+</select>
+
+<!-- 3 -->
+<label>Type of Meeting </label>
+<select name="Meeting_Type" required>
+  <option value="">Choose</option>
+  <option>Daily Sync</option>
+  <option>Weekly Review</option>
+  <option>Planning</option>
+  <option>Brainstorming</option>
+  <option>Emergency</option>
+  <option>Other</option>
+</select>
+
+<!-- 4 -->
+<label>Meeting Mode </label>
+<select name="Meeting_Mode" required>
+  <option value="">Choose</option>
+  <option>Online</option>
+  <option>Offline</option>
+  <option>Hybrid</option>
+</select>
+
+<!-- 5 -->
+<label>Meeting Objective(s) </label>
+<textarea name="Objective" placeholder="What was the core reason and desired outcome?" required></textarea>
+
+<!-- 6 -->
+<label>Agenda Points Discussed </label>
+<textarea name="Agenda" placeholder="List topics covered in order" required></textarea>
+
+<!-- 7 -->
+<label>Meeting Start Time</label>
+
+<div class="time-row">
+
+  <input
+    type="number"
+    name="Start_Time"
+    class="time-box"
+    min="1"
+    max="12"
+    placeholder="HH"
+    required
+  >
+
+  <span class="time-separator">:</span>
+
+  <input
+    type="number"
+    name="Start_Minute"
+    class="time-box"
+    min="0"
+    max="59"
+    placeholder="MM"
+    required
+  >
+
+  <div class="ampm-toggle">
+    <input type="radio" id="start-am" name="Start_AMPM" value="AM" required>
+    <label for="start-am">AM</label>
+
+    <input type="radio" id="start-pm" name="Start_AMPM" value="PM">
+    <label for="start-pm">PM</label>
+  </div>
+
+</div>
+
+
+
+<!-- 8 -->
+<label>Meeting End Time</label>
+
+<div class="time-row">
+
+  <input
+    type="number"
+    name="End_Time"
+    class="time-box"
+    min="1"
+    max="12"
+    placeholder="HH"
+    required
+  >
+
+  <span class="time-separator">:</span>
+
+  <input
+    type="number"
+    name="End_Minute"
+    class="time-box"
+    min="0"
+    max="59"
+    placeholder="MM"
+    required
+  >
+
+  <div class="ampm-toggle">
+    <input type="radio" id="end-am" name="End_AMPM" value="AM" required>
+    <label for="end-am">AM</label>
+
+    <input type="radio" id="end-pm" name="End_AMPM" value="PM">
+    <label for="end-pm">PM</label>
+  </div>
+
+</div>
+
+
+<!-- 9 -->
+<label>Attendees</label>
+
+<!-- Select All checkbox -->
+<label style="font-weight:600;">
+  <input type="checkbox" id="selectAllAttendees">
+  Select All
+</label>
+
+<div class="checkbox-group">
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Sauvik Deb"> Sauvik Deb (CEO & Founder)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Pooja Senthilkumar"> Pooja Senthilkumar (BDE)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Thipshiga S"> Thipshiga S (COO)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Shrigesh A"> Shrigesh A (PDM)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Prajwal N"> Prajwal N (Tech Lead)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Nivethitha R"> Nivethitha R (Intern)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="MukeshKumar M S"> MukeshKumar M S (Asst. Tech Lead)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Subhashree"> Subhashree (DME)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Rosvi S"> Rosvi S (Content Specialist)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Naveen"> Naveen (Video Editing)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Ram Prasath"> Ram Prasath (Video Editing)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Avinash R"> Avinash R (Graphic Designer)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Priyanka K"> Priyanka K (COS)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Sanjay R"> Sanjay R (CRM)</label>
+  <label><input type="checkbox" class="attendee" name="Attendees" value="Dhanushree"> Dhanushree (COS)</label>
+</div>
+
+<br>
+<!-- 10 -->
+<!-- 10 -->
+<label>Names of Absentees </label>
+<div class="checkbox-group">
+  <label><input type="checkbox" name="Absentees" value="Sauvik Deb"> Sauvik Deb (CEO & Founder)</label>
+  <label><input type="checkbox" name="Absentees" value="Pooja Senthilkumar"> Pooja Senthilkumar (BDE)</label>
+  <label><input type="checkbox" name="Absentees" value="Thipshiga S"> Thipshiga S (COO)</label>
+  <label><input type="checkbox" name="Absentees" value="Shrigesh A"> Shrigesh A (PDM)</label>
+  <label><input type="checkbox" name="Absentees" value="Prajwal N"> Prajwal N (Tech Lead)</label>
+  <label><input type="checkbox" name="Absentees" value="Nivethitha R"> Nivethitha R (Intern)</label>
+  <label><input type="checkbox" name="Absentees" value="MukeshKumar M S"> MukeshKumar M S (Asst. Tech Lead)</label>
+  <label><input type="checkbox" name="Absentees" value="Subhashree"> Subhashree (DME)</label>
+  <label><input type="checkbox" name="Absentees" value="Rosvi S"> Rosvi S (Content Specialist)</label>
+  <label><input type="checkbox" name="Absentees" value="Naveen"> Naveen (Video Editing)</label>
+  <label><input type="checkbox" name="Absentees" value="Ram Prasath"> Ram Prasath (Video Editing)</label>
+  <label><input type="checkbox" name="Absentees" value="Avinash R"> Avinash R (Graphic Designer)</label>
+  <label><input type="checkbox" name="Absentees" value="Priyanka K"> Priyanka K (COS)</label>
+  <label><input type="checkbox" name="Absentees" value="Sanjay R"> Sanjay R (CRM)</label>
+  <label><input type="checkbox" name="Absentees" value="Dhanushree"> Dhanushree (COS)</label>
+</div>
+
+
+<!-- 11 -->
+<label>Reason for Absence </label>
+<textarea name="Absence_Reason"></textarea>
+
+<!-- 12 -->
+<label>Key Decisions Made & Action Items </label>
+<textarea name="Key_Decisions" required></textarea>
+
+<!-- 13 -->
+<label>Upload Files Used in the Meeting (If Any)</label>
+<input type="file" name="Meeting_File">
+
+<!-- 14 -->
+<label>Was the Meeting Productive? </label>
+<div class="radio-group">
+  <label><input type="radio" name="Productive" value="Yes" required> Yes</label>
+  <label><input type="radio" name="Productive" value="Partially"> Partially</label>
+  <label><input type="radio" name="Productive" value="No"> No</label>
+</div>
+
+<!-- 15 -->
+<label>If Partially or No, explain why</label>
+<textarea name="Productivity_Issue"></textarea>
+
+<!-- 16 -->
+<label>Blockers / Issues Identified & Feedback</label>
+<textarea name="Blockers"></textarea>
+
+<!-- 17 -->
+<label>Is a Follow-up Meeting Required? </label>
+<div class="radio-group">
+  <label><input type="radio" name="Follow_Up" value="Yes" required> Yes</label>
+  <label><input type="radio" name="Follow_Up" value="No"> No</label>
+</div>
+
+<!-- 18 -->
+<label>Next Follow-up Date</label>
+<input type="date" name="Follow_Up_Date">
+
+<!-- 19 -->
+<label>Name of Person Submitting this Form</label>
+<input list="submitted_by_list" name="Submitted_By" placeholder="Choose or type" required>
+
+<datalist id="submitted_by_list">
+  <option value="Sauvik Deb">
+  <option value="Pooja Senthilkumar">
+  <option value="Nivethitha R">
+  <option value="Shrigesh A">
+  <option value="Prajwal N">
+  <option value="Mukeshkumar M S">
+  <option value="Subhashree">
+  <option value="Rosvi S">
+  <option value="Naveen">
+  <option value="Ram Prasath">
+  <option value="Avinash R">
+  <option value="Priyanka K">
+  <option value="Sanjay R">
+  <option value="Dhanushree">
+</datalist>
+
+
+<!-- 20 -->
+<label>Name of the Department Head</label>
+<input list="dept_head_list" name="Department_Head" placeholder="Choose or type" required>
+
+<datalist id="dept_head_list">
+  <option value="Sauvik Deb">
+  <option value="Thipshiga S">
+  <option value="Shrigesh A">
+  <option value="Prajwal N">
+</datalist>
+
+<button type="submit">Submit</button>
+
+</form>
+</div>
+<script>
+  const selectAll = document.getElementById("selectAllAttendees");
+  const attendees = document.querySelectorAll(".attendee");
+
+  // Select / Deselect all
+  selectAll.addEventListener("change", function () {
+    attendees.forEach(cb => cb.checked = this.checked);
+  });
+
+  // Auto-update Select All checkbox
+  attendees.forEach(cb => {
+    cb.addEventListener("change", function () {
+      selectAll.checked = Array.from(attendees).every(c => c.checked);
+    });
+  });
+</script>
+
+</body>
+</html>
