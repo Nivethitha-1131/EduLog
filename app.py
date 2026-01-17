@@ -51,7 +51,6 @@ def login():
 def dashboard():
     if request.method == "POST":
 
-        # Convert times to REAL Excel-compatible time
         start_time = to_24hr_time(
             request.form.get("Start_Time"),
             request.form.get("Start_Minute"),
@@ -71,11 +70,8 @@ def dashboard():
             "Meeting_Mode": request.form.get("Meeting_Mode"),
             "Objective": request.form.get("Objective"),
             "Agenda": request.form.get("Agenda"),
-
-            # ✅ REAL TIME (Excel understands this)
             "Start_Time": start_time,
             "End_Time": end_time,
-
             "Attendees": ", ".join(request.form.getlist("Attendees")),
             "Absentees": ", ".join(request.form.getlist("Absentees")),
             "Absence_Reason": request.form.get("Absence_Reason"),
@@ -87,32 +83,27 @@ def dashboard():
             "Follow_Up_Date": request.form.get("Follow_Up_Date"),
             "Submitted_By": request.form.get("Submitted_By"),
             "Department_Head": request.form.get("Department_Head"),
-
-            # Timestamp stays datetime
             "Timestamp": datetime.now()
         }
 
         print("FORM DATA RECEIVED:", data)
 
-        # Ensure folder
         os.makedirs("data", exist_ok=True)
-        excel_path = os.path.join("data", "responses.xlsx")
+        excel_path = os.path.join("data", "responses_data.xlsx")
 
-        # Read / append safely
         if os.path.exists(excel_path):
-            df = pd.read_excel(excel_path)
-
-            # Ensure time columns stay time
-            if "Start_Time" in df.columns:
-                df["Start_Time"] = pd.to_datetime(df["Start_Time"], errors="coerce").dt.time
-            if "End_Time" in df.columns:
-                df["End_Time"] = pd.to_datetime(df["End_Time"], errors="coerce").dt.time
-
-            df = pd.concat([df, pd.DataFrame([data])], ignore_index=True)
+            df_existing = pd.read_excel(excel_path)
+            df = pd.concat([df_existing, pd.DataFrame([data])], ignore_index=True)
         else:
             df = pd.DataFrame([data])
 
-        df.to_excel(excel_path, index=False, engine="openpyxl")
+        # ✅ CORRECTLY INDENTED WITH BLOCK
+        with pd.ExcelWriter(
+            excel_path,
+            engine="openpyxl",
+            mode="w"
+        ) as writer:
+            df.to_excel(writer, index=False)
 
         return render_template("dashboard.html", success=True)
 
